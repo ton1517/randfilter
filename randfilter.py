@@ -26,11 +26,12 @@
 randfilter
 
 Usage:
-    randfilter [-n <num> | -p <probability>] [-u | --unorder] [<file>...]
+    randfilter [-n <num> | -p <probability>] [-u | --unorder] [<files>...]
     randfilter -h | --help
     randfilter -v | --version
 
 Options:
+    <files>...          Choose and output lines at random in files. If omitted, use stdin.
     -n <num>            The choise number of lines.
     -p <probability>    The choise probability of lines. The value is 0.0 to 1.0.
     -u --unorder        Output lines are unordered.
