@@ -1,12 +1,15 @@
 randfilter
 ===========
 
+randfilter is tested with Python 2.6, 2.7, 3.2, 3.3.
+
 Requirements
 ============
 
 - Python 2.6 / 2.7 / 3.2 / 3.3 or higher
 
-I'm testing with 2.6.8, 2.7.5, 3.2.5, 3.3.2.
+- docopt==0.6.1
+- schema==0.2.0
 
 Installation
 ============
