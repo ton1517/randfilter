@@ -10,6 +10,7 @@ setup(
     license = randfilter.LICENSE,
     author = randfilter.AUTHOR,
     author_email = randfilter.AUTHOR_EMAIL,
+    install_requires = open("requirements.txt").read().splitlines(),
     py_modules = ['randfilter'],
     entry_points = {
         "console_scripts": ["randfilter = randfilter:main"]
