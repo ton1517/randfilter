@@ -22,6 +22,24 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+"""
+randfilter
+
+Usage:
+    randfilter [-n <num> | -p <probability>] [-u | --unorder] [<file>...]
+    randfilter -h | --help
+    randfilter -v | --version
+
+Options:
+    -n <num>            The choise number of lines.
+    -p <probability>    The choise probability of lines. The value is 0.0 to 1.0.
+    -u --unorder        Output lines are unordered.
+    -h --help           Show this screen.
+    -v --version        Show version.
+"""
+
+from docopt import docopt
+
 #=======================================
 # config
 #=======================================
