@@ -39,7 +39,10 @@ Options:
     -v --version        Show version.
 """
 
+import sys
+
 from docopt import docopt
+from schema import Schema, SchemaError, And, Or, Use
 
 #=======================================
 # config
@@ -54,11 +57,36 @@ AUTHOR = 'ton1517'
 AUTHOR_EMAIL = 'tonton1517@gmail.com'
 
 #=======================================
+# functions
+#=======================================
+
+def validate_args(args):
+    """validate arguments."""
+
+    schema = Schema({
+        '-n': Or(None, And(Use(int), lambda n: 0 <= n), error="-n should be positive integer"),
+        '-p': Or(None, And(Use(float), lambda n: 0.0 <= n <= 1.0), error="-p should be float 0 <= N <= 1.0"),
+        '--unorder': bool,
+        '--help': bool,
+        '--version': bool,
+        '<files>': [Use(open, error="Files should be readable")]
+    })
+
+    try:
+        args = schema.validate(args)
+    except SchemaError as e:
+        print(e)
+        sys.exit(1)
+
+    return args
+
+#=======================================
 # main
 #=======================================
 
 def main():
-    pass
+    args = docopt(__doc__, version="{0} {1}".format(NAME, VERSION))
+    args = validate_args(args)
 
 if __name__ == "__main__":
     main()
