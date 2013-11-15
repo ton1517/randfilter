@@ -45,6 +45,11 @@ class TestCommandlineArgs(object):
         eq_(args, correct_dict)
 
     @raises(DocoptExit)
+    def test_no_options(self):
+        argv = ["LICENSE", "README.rst"]
+        args = self.parse_args(argv)
+
+    @raises(DocoptExit)
     def test_duplicate_options(self):
         argv = ["-n", "10", "-n" "8", "LICENSE", "README.rst"]
         args = self.parse_args(argv)
@@ -76,49 +81,49 @@ class TestValidateArgValues(object):
     @raises(SchemaError)
     def test_validate_n_type(self):
         """should be interger"""
-        args = self.validate([], "0.1", "0.5", False, False, False, False)
+        args = self.validate([], "0.1", None, False, False, False, False)
 
     def test_validate_n_range(self):
         """should be positive interger"""
-        args = self.validate([], "0", "0.5", False, False, False, False)
+        args = self.validate([], "0", None, False, False, False, False)
         eq_(args["-n"], 0)
 
         args = self.validate([], "1000000000000", "0.5", False, False, False, False)
         eq_(args["-n"], 1000000000000)
 
         with assert_raises(SchemaError):
-            args = self.validate([], "-1", "0.5", False, False, False, False)
+            args = self.validate([], "-1", None, False, False, False, False)
 
     def test_validate_p_type(self):
         """should be float"""
 
-        args = self.validate([], "1", "1", False, False, False, False)
+        args = self.validate([], None, "1", False, False, False, False)
         eq_(args["-p"], 1.0)
 
         with assert_raises(SchemaError):
-            args = self.validate([], "1", "hoge", False, False, False, False)
+            args = self.validate([], None, "hoge", False, False, False, False)
 
     def test_validate_p_range(self):
         """should be float 0 <= N <= 1.0"""
-        args = self.validate([], "1", "0.0", False, False, False, False)
+        args = self.validate([], None, "0.0", False, False, False, False)
         eq_(args["-p"], 0.0)
 
-        args = self.validate([], "1", "1.0", False, False, False, False)
+        args = self.validate([], None, "1.0", False, False, False, False)
         eq_(args["-p"], 1.0)
 
         with assert_raises(SchemaError):
-            args = self.validate([], "1", "-0.1", False, False, False, False)
+            args = self.validate([], None, "-0.1", False, False, False, False)
 
         with assert_raises(SchemaError):
-            args = self.validate([], "1", "1.1", False, False, False, False)
+            args = self.validate([], None, "1.1", False, False, False, False)
 
     def test_validate_files(self):
-        args = self.validate([], "1", "0.1", False, False, False, False)
+        args = self.validate([], None, "0.1", False, False, False, False)
         eq_(args["<files>"], [sys.stdin])
 
-        args = self.validate(["LICENSE"], "1", "0.1", False, False, False, False)
+        args = self.validate(["LICENSE"], None, "0.1", False, False, False, False)
         eq_(type(args["<files>"][0]), file)
 
         with assert_raises(SchemaError):
-            args = self.validate(["HOGE"], "1", "0.1", False, False, False, False)
+            args = self.validate(["HOGE"], None, "0.1", False, False, False, False)
 
