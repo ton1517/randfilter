@@ -26,7 +26,7 @@
 randfilter
 
 Usage:
-    randfilter [-n <num> | -p <probability>] [-u | --unorder] [<files>...]
+    randfilter [-n <num> | -p <probability>] [-u | --unorder] [-i | --ignore-empty] [<files>...]
     randfilter -h | --help
     randfilter -v | --version
 
@@ -35,6 +35,7 @@ Options:
     -n <num>            The choise number of lines.
     -p <probability>    The choise probability of lines. The value is 0.0 to 1.0.
     -u --unorder        Output lines are unordered.
+    -i --ignore-empty   Ignore empty line.
     -h --help           Show this screen.
     -v --version        Show version.
 """
@@ -67,6 +68,7 @@ def validate_args(args):
         '-n': Or(None, And(Use(int), lambda n: 0 <= n), error="-n should be positive integer"),
         '-p': Or(None, And(Use(float), lambda n: 0.0 <= n <= 1.0), error="-p should be float 0 <= N <= 1.0"),
         '--unorder': bool,
+        '--ignore-empty': bool,
         '--help': bool,
         '--version': bool,
         '<files>': [Use(open, error="Files should be readable")]
