@@ -72,13 +72,7 @@ def validate_args(args):
         '<files>': [Use(open, error="Files should be readable")]
     })
 
-    try:
-        args = schema.validate(args)
-    except SchemaError as e:
-        print(e)
-        sys.exit(1)
-
-    return args
+    return schema.validate(args)
 
 #=======================================
 # main
@@ -86,7 +80,12 @@ def validate_args(args):
 
 def main():
     args = docopt(__doc__, version="{0} {1}".format(NAME, VERSION))
-    args = validate_args(args)
+
+    try:
+        args = validate_args(args)
+    except SchemaError as e:
+        print(e)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
