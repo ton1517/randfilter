@@ -117,8 +117,9 @@ class TestValidateArgValues(object):
         args = self.validate([], "1000000000000", "0.5", False, False, False, False)
         eq_(args["-n"], 1000000000000)
 
-        with assert_raises(SchemaError):
-            args = self.validate([], "-1", None, False, False, False, False)
+    @raises(SchemaError)
+    def test_validate_n_range2(self):
+        args = self.validate([], "-1", None, False, False, False, False)
 
     def test_validate_p_type(self):
         """should be float"""
@@ -126,8 +127,9 @@ class TestValidateArgValues(object):
         args = self.validate([], None, "1", False, False, False, False)
         eq_(args["-p"], 1.0)
 
-        with assert_raises(SchemaError):
-            args = self.validate([], None, "hoge", False, False, False, False)
+    @raises(SchemaError)
+    def test_validate_p_type2(self):
+        args = self.validate([], None, "hoge", False, False, False, False)
 
     def test_validate_p_range(self):
         """should be float 0 <= N <= 1.0"""
@@ -137,19 +139,24 @@ class TestValidateArgValues(object):
         args = self.validate([], None, "1.0", False, False, False, False)
         eq_(args["-p"], 1.0)
 
-        with assert_raises(SchemaError):
-            args = self.validate([], None, "-0.1", False, False, False, False)
+    @raises(SchemaError)
+    def test_validate_p_range2(self):
+        args = self.validate([], None, "-0.1", False, False, False, False)
 
-        with assert_raises(SchemaError):
-            args = self.validate([], None, "1.1", False, False, False, False)
+    @raises(SchemaError)
+    def test_validate_p_range2(self):
+        args = self.validate([], None, "1.1", False, False, False, False)
 
     def test_validate_files(self):
         args = self.validate([], None, "0.1", False, False, False, False)
         eq_(args["<files>"], [sys.stdin])
 
         args = self.validate(["LICENSE"], None, "0.1", False, False, False, False)
-        eq_(type(args["<files>"][0]), file)
+        import io
+        ok_(type(args["<files>"][0] is io.IOBase))
 
-        with assert_raises(SchemaError):
-            args = self.validate(["HOGE"], None, "0.1", False, False, False, False)
+    @raises(SchemaError)
+    def test_dummy_files(self):
+        args = self.validate(["HOGE"], None, "0.1", False, False, False, False)
+        print(args)
 
