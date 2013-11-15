@@ -41,6 +41,7 @@ Options:
 """
 
 import sys
+import itertools
 
 from docopt import docopt
 from schema import Schema, SchemaError, And, Or, Use
@@ -60,6 +61,17 @@ AUTHOR_EMAIL = 'tonton1517@gmail.com'
 #=======================================
 # functions
 #=======================================
+
+def iter_files(opened_files, ignore_empty = False):
+    """return generator includes all file's lines."""
+
+    it = itertools.chain(*opened_files)
+
+    for line in it:
+        if ignore_empty and line.strip() == "":
+            continue
+
+        yield line
 
 def validate_args(args):
     """validate arguments."""
