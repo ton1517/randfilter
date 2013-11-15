@@ -8,7 +8,6 @@ from schema import Schema, SchemaError, And, Or, Use
 
 import randfilter
 
-
 def make_docdict(f, n, p, u, i, h, v):
     return {
         '-n':n,
@@ -19,6 +18,33 @@ def make_docdict(f, n, p, u, i, h, v):
         '--version':v,
         '<files>':f
     }
+
+class TestIterFiles(object):
+
+    def test_iter_files(self):
+        files = [open("testfiles/testfile1"), open("testfiles/testfile2")]
+
+        lines = files[0].readlines() + files[1].readlines()
+
+        for i, line in enumerate(randfilter.iter_files(files)):
+            eq_(line, lines[i])
+
+    def test_iter_files_ignore_empty(self):
+        files = [open("testfiles/testfile1"), open("testfiles/testfile2")]
+
+        lines = []
+        correct_length = 0
+
+        for i in  range(20):
+            lines.append(str(i+1)+"\n")
+            correct_length += 1
+
+        length = 0
+        for i, line in enumerate(randfilter.iter_files(files, True)):
+            length += 1
+            eq_(line, lines[i])
+
+        eq_(correct_length, length)
 
 class TestCommandlineArgs(object):
 
