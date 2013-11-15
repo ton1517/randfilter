@@ -74,7 +74,12 @@ def validate_args(args):
         '<files>': [Use(open, error="Files should be readable")]
     })
 
-    return schema.validate(args)
+    args = schema.validate(args)
+
+    if len(args["<files>"]) == 0:
+        args["<files>"].append(sys.stdin)
+
+    return args
 
 #=======================================
 # main
