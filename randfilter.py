@@ -26,7 +26,7 @@
 randfilter
 
 Usage:
-    randfilter [-n <num> | -p <probability>] [-u | --unorder] [-i | --ignore-empty] [<files>...]
+    randfilter (-n <num> | -p <probability>) [-u | --unorder] [-i | --ignore-empty] [<files>...]
     randfilter -h | --help
     randfilter -v | --version
 
