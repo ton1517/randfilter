@@ -40,6 +40,7 @@ Options:
     -v --version        Show version.
 """
 
+from __future__ import print_function
 import sys
 import itertools
 from random import random, sample
@@ -129,6 +130,15 @@ def main():
     except SchemaError as e:
         print(e)
         sys.exit(1)
+
+    it = iter_files(args["<files>"], args["--ignore-empty"])
+
+    if not args["-n"] is None:
+        lines = choose_random_lines_num(it, args["-n"], args["--unorder"])
+    else:
+        lines = choose_random_lines_probability(it, args["-p"], args["--unorder"])
+
+    print("".join(lines), end="")
 
 if __name__ == "__main__":
     main()
