@@ -55,7 +55,7 @@ from schema import Schema, SchemaError, And, Or, Use
 NAME = 'randfilter'
 VERSION = '0.0.1'
 LICENSE = 'MIT License'
-DESCRIPTION = ''
+DESCRIPTION = 'This tool reads files or stdin and outputs random lines.'
 URL = 'https://github.com/ton1517/randfilter'
 AUTHOR = 'ton1517'
 AUTHOR_EMAIL = 'tonton1517@gmail.com'
@@ -65,7 +65,12 @@ AUTHOR_EMAIL = 'tonton1517@gmail.com'
 #=======================================
 
 def iter_files(opened_files, ignore_empty = False):
-    """return generator includes all file's lines."""
+    """return generator includes all file's lines.
+    Arg :
+        opened_files: file object list
+        ignore_empty: if ignore empty line, specify True.
+    Return: iterator that includes all lines of files.
+    """
 
     it = itertools.chain(*opened_files)
 
@@ -76,7 +81,10 @@ def iter_files(opened_files, ignore_empty = False):
         yield line
 
 def validate_args(args):
-    """validate arguments."""
+    """validate arguments.
+    Arg: dictionary of arguments.
+    Return: validated dictionary.
+    """
 
     schema = Schema({
         '-n': Or(None, And(Use(int), lambda n: 0 <= n), error="-n should be positive integer"),
@@ -100,6 +108,13 @@ def validate_args(args):
 #=======================================
 
 def choose_random_lines_probability(files_iter, probability, unorder):
+    """choose lines by random probability.
+    Arg:
+        files_iter: iterator by iter_files()
+        probability: chosen probability. 0 <= n <= 1.0
+        unorder: if you want fixed order, specify False.
+    Return: list of lines chosen random.
+    """
     lines = [line for line in files_iter if random.random() < probability]
 
     if unorder:
@@ -108,6 +123,14 @@ def choose_random_lines_probability(files_iter, probability, unorder):
     return lines
 
 def choose_random_lines_num(files_iter, num, unorder):
+    """choose lines by random sampling.
+    Arg:
+        files_iter: iterator by iter_files()
+        num: number of lines
+        unorder: if you want fixed order, specify False.
+    Return: list of lines chosen random.
+    """
+ 
     lines = [line for line in files_iter]
     length = len(lines)
     num = length if num > length else num
