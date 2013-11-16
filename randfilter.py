@@ -42,6 +42,7 @@ Options:
 
 import sys
 import itertools
+from random import random, sample
 
 from docopt import docopt
 from schema import Schema, SchemaError, And, Or, Use
@@ -92,6 +93,18 @@ def validate_args(args):
         args["<files>"].append(sys.stdin)
 
     return args
+
+#=======================================
+# random functions
+#=======================================
+
+def choose_random_lines_probability(files_iter, probability, unorder):
+    lines = [line for line in files_iter if random() < probability]
+
+    if unorder:
+        random.shuffle(lines)
+
+    return lines
 
 #=======================================
 # main
