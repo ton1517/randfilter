@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import random
 
 from nose.tools import *
+from mock import patch
 from docopt import docopt, DocoptExit
 from schema import Schema, SchemaError, And, Or, Use
 
@@ -159,4 +161,81 @@ class TestValidateArgValues(object):
     def test_dummy_files(self):
         args = self.validate(["HOGE"], None, "0.1", False, False, False, False)
         print(args)
+
+class TestChooseRandomLinesProbability(object):
+
+    @patch("random.random", lambda: 0)
+    def test_all(self):
+        filename = "testfiles/testfile1"
+        f = [open(filename)]
+        it = randfilter.iter_files(f, False)
+        l = randfilter.choose_random_lines_probability(it, 0.5, False)
+
+        lines = open(filename).readlines()
+
+        for i, item in enumerate(l):
+            eq_(item, lines[i])
+
+    @patch("random.random", lambda: 0.5)
+    def test_border(self):
+        f = [open("testfiles/testfile1")]
+        it = randfilter.iter_files(f, False)
+        l = randfilter.choose_random_lines_probability(it, 0.5, False)
+
+        eq_(l, [])
+
+    @patch("random.random", lambda: 0)
+    def test_order(self):
+        f = [open("testfiles/testfile1")]
+        it = randfilter.iter_files(f, True)
+        l = randfilter.choose_random_lines_probability(it, 0.5, False)
+
+        for i, line in enumerate(l):
+            eq_(line, str(i+1)+"\n")
+
+    def test_unorder(self):
+        f = [open("testfiles/testfile1")]
+        it = randfilter.iter_files(f, False)
+        l = randfilter.choose_random_lines_probability(it, 1, True)
+
+        correct_lines= open("testfiles/testfile1").readlines()
+
+        ok_(l != correct_lines)
+
+class TestChooseRandomLinesNum(object):
+
+    def test_all(self):
+        filename = "testfiles/testfile1"
+        f = [open(filename)]
+        it = randfilter.iter_files(f, False)
+        l = randfilter.choose_random_lines_num(it, 100, False)
+
+        lines = open(filename).readlines()
+
+        for i, item in enumerate(l):
+            eq_(item, lines[i])
+
+    def test_zero(self):
+        f = [open("testfiles/testfile1")]
+        it = randfilter.iter_files(f, False)
+        l = randfilter.choose_random_lines_num(it, 0, False)
+
+        eq_(l, [])
+
+    def test_order(self):
+        f = [open("testfiles/testfile1")]
+        it = randfilter.iter_files(f, True)
+        l = randfilter.choose_random_lines_num(it, 100, False)
+
+        for i, line in enumerate(l):
+            eq_(line, str(i+1)+"\n")
+
+    def test_unorder(self):
+        f = [open("testfiles/testfile1")]
+        it = randfilter.iter_files(f, False)
+        l = randfilter.choose_random_lines_num(it, 100, True)
+
+        correct_lines= open("testfiles/testfile1").readlines()
+
+        ok_(l != correct_lines)
 
