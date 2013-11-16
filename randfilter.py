@@ -53,7 +53,7 @@ from schema import Schema, SchemaError, And, Or, Use
 #=======================================
 
 NAME = 'randfilter'
-VERSION = '0.0.1'
+VERSION = '1.0.0'
 LICENSE = 'MIT License'
 DESCRIPTION = 'This tool reads files or stdin and outputs random lines.'
 URL = 'https://github.com/ton1517/randfilter'
