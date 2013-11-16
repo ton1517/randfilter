@@ -43,7 +43,7 @@ Options:
 from __future__ import print_function
 import sys
 import itertools
-from random import random, sample
+import random
 
 from docopt import docopt
 from schema import Schema, SchemaError, And, Or, Use
@@ -100,7 +100,7 @@ def validate_args(args):
 #=======================================
 
 def choose_random_lines_probability(files_iter, probability, unorder):
-    lines = [line for line in files_iter if random() < probability]
+    lines = [line for line in files_iter if random.random() < probability]
 
     if unorder:
         random.shuffle(lines)
@@ -111,7 +111,7 @@ def choose_random_lines_num(files_iter, num, unorder):
     lines = [line for line in files_iter]
     length = len(lines)
     num = length if num > length else num
-    line_nums = sample(range(length), num)
+    line_nums = random.sample(range(length), num)
 
     if not unorder:
         line_nums.sort()
