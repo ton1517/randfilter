@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import random
 
-from nose.tools import *
+from nose.tools import eq_, ok_, raises
 from mock import patch
 from docopt import docopt, DocoptExit
-from schema import Schema, SchemaError, And, Or, Use
+from schema import SchemaError
 
 import randfilter
 
+
 def make_docdict(f, n, p, u, i, h, v):
     return {
-        '-n':n,
-        '-p':p,
-        '--unorder':u,
-        '--ignore-empty':i,
-        '--help':h,
-        '--version':v,
-        '<files>':f
+        '-n': n,
+        '-p': p,
+        '--unorder': u,
+        '--ignore-empty': i,
+        '--help': h,
+        '--version': v,
+        '<files>': f
     }
+
 
 class TestIterFiles(object):
 
@@ -37,8 +38,8 @@ class TestIterFiles(object):
         lines = []
         correct_length = 0
 
-        for i in  range(20):
-            lines.append(str(i+1)+"\n")
+        for i in range(20):
+            lines.append(str(i + 1) + "\n")
             correct_length += 1
 
         length = 0
@@ -47,6 +48,7 @@ class TestIterFiles(object):
             eq_(line, lines[i])
 
         eq_(correct_length, length)
+
 
 class TestCommandlineArgs(object):
 
@@ -57,7 +59,8 @@ class TestCommandlineArgs(object):
         argv = ["-n", "10", "LICENSE", "README.rst"]
         args = self.parse_args(argv)
 
-        correct_dict = make_docdict(["LICENSE", "README.rst"], "10", None, False, False, False, False)
+        correct_dict = make_docdict(
+            ["LICENSE", "README.rst"], "10", None, False, False, False, False)
         eq_(args, correct_dict)
 
     def test_normal_case2(self):
@@ -75,17 +78,17 @@ class TestCommandlineArgs(object):
     @raises(DocoptExit)
     def test_no_options(self):
         argv = ["LICENSE", "README.rst"]
-        args = self.parse_args(argv)
+        self.parse_args(argv)
 
     @raises(DocoptExit)
     def test_duplicate_options(self):
         argv = ["-n", "10", "-n" "8", "LICENSE", "README.rst"]
-        args = self.parse_args(argv)
+        self.parse_args(argv)
 
     @raises(DocoptExit)
     def test_exclusive_options(self):
         argv = ["-n", "10", "-p" "0.8", "LICENSE", "README.rst"]
-        args = self.parse_args(argv)
+        self.parse_args(argv)
 
 
 class TestValidateArgValues(object):
@@ -109,19 +112,20 @@ class TestValidateArgValues(object):
     @raises(SchemaError)
     def test_validate_n_type(self):
         """should be interger"""
-        args = self.validate([], "0.1", None, False, False, False, False)
+        self.validate([], "0.1", None, False, False, False, False)
 
     def test_validate_n_range(self):
         """should be positive interger"""
         args = self.validate([], "0", None, False, False, False, False)
         eq_(args["-n"], 0)
 
-        args = self.validate([], "1000000000000", "0.5", False, False, False, False)
+        args = self.validate([], "1000000000000", "0.5",
+                             False, False, False, False)
         eq_(args["-n"], 1000000000000)
 
     @raises(SchemaError)
     def test_validate_n_range2(self):
-        args = self.validate([], "-1", None, False, False, False, False)
+        self.validate([], "-1", None, False, False, False, False)
 
     def test_validate_p_type(self):
         """should be float"""
@@ -131,7 +135,7 @@ class TestValidateArgValues(object):
 
     @raises(SchemaError)
     def test_validate_p_type2(self):
-        args = self.validate([], None, "hoge", False, False, False, False)
+        self.validate([], None, "hoge", False, False, False, False)
 
     def test_validate_p_range(self):
         """should be float 0 <= N <= 1.0"""
@@ -143,24 +147,25 @@ class TestValidateArgValues(object):
 
     @raises(SchemaError)
     def test_validate_p_range2(self):
-        args = self.validate([], None, "-0.1", False, False, False, False)
+        self.validate([], None, "-0.1", False, False, False, False)
 
     @raises(SchemaError)
-    def test_validate_p_range2(self):
-        args = self.validate([], None, "1.1", False, False, False, False)
+    def test_validate_p_range3(self):
+        self.validate([], None, "1.1", False, False, False, False)
 
     def test_validate_files(self):
         args = self.validate([], None, "0.1", False, False, False, False)
         eq_(args["<files>"], [sys.stdin])
 
-        args = self.validate(["LICENSE"], None, "0.1", False, False, False, False)
+        args = self.validate(["LICENSE"], None, "0.1",
+                             False, False, False, False)
         import io
         ok_(type(args["<files>"][0] is io.IOBase))
 
     @raises(SchemaError)
     def test_dummy_files(self):
-        args = self.validate(["HOGE"], None, "0.1", False, False, False, False)
-        print(args)
+        self.validate(["HOGE"], None, "0.1", False, False, False, False)
+
 
 class TestChooseRandomLinesProbability(object):
 
@@ -191,16 +196,17 @@ class TestChooseRandomLinesProbability(object):
         l = randfilter.choose_random_lines_probability(it, 0.5, False)
 
         for i, line in enumerate(l):
-            eq_(line, str(i+1)+"\n")
+            eq_(line, str(i + 1) + "\n")
 
     def test_unorder(self):
         f = [open("testfiles/testfile1")]
         it = randfilter.iter_files(f, False)
         l = randfilter.choose_random_lines_probability(it, 1, True)
 
-        correct_lines= open("testfiles/testfile1").readlines()
+        correct_lines = open("testfiles/testfile1").readlines()
 
         ok_(l != correct_lines)
+
 
 class TestChooseRandomLinesNum(object):
 
@@ -228,14 +234,13 @@ class TestChooseRandomLinesNum(object):
         l = randfilter.choose_random_lines_num(it, 100, False)
 
         for i, line in enumerate(l):
-            eq_(line, str(i+1)+"\n")
+            eq_(line, str(i + 1) + "\n")
 
     def test_unorder(self):
         f = [open("testfiles/testfile1")]
         it = randfilter.iter_files(f, False)
         l = randfilter.choose_random_lines_num(it, 100, True)
 
-        correct_lines= open("testfiles/testfile1").readlines()
+        correct_lines = open("testfiles/testfile1").readlines()
 
         ok_(l != correct_lines)
-

@@ -64,7 +64,8 @@ AUTHOR_EMAIL = 'tonton1517@gmail.com'
 # functions
 #=======================================
 
-def iter_files(opened_files, ignore_empty = False):
+
+def iter_files(opened_files, ignore_empty=False):
     """return generator includes all file's lines.
     Arg :
         opened_files: file object list
@@ -72,13 +73,14 @@ def iter_files(opened_files, ignore_empty = False):
     Return: iterator that includes all lines of files.
     """
 
-    it = itertools.chain(*opened_files)
+    files_iter = itertools.chain(*opened_files)
 
-    for line in it:
+    for line in files_iter:
         if ignore_empty and line.strip() == "":
             continue
 
         yield line
+
 
 def validate_args(args):
     """validate arguments.
@@ -88,7 +90,8 @@ def validate_args(args):
 
     schema = Schema({
         '-n': Or(None, And(Use(int), lambda n: 0 <= n), error="-n should be positive integer"),
-        '-p': Or(None, And(Use(float), lambda n: 0.0 <= n <= 1.0), error="-p should be float 0 <= N <= 1.0"),
+        '-p': Or(None, And(Use(float), lambda n: 0.0 <= n <= 1.0),
+                 error="-p should be float 0 <= N <= 1.0"),
         '--unorder': bool,
         '--ignore-empty': bool,
         '--help': bool,
@@ -107,6 +110,7 @@ def validate_args(args):
 # random functions
 #=======================================
 
+
 def choose_random_lines_probability(files_iter, probability, unorder):
     """choose lines by random probability.
     Arg:
@@ -122,6 +126,7 @@ def choose_random_lines_probability(files_iter, probability, unorder):
 
     return lines
 
+
 def choose_random_lines_num(files_iter, num, unorder):
     """choose lines by random sampling.
     Arg:
@@ -130,7 +135,7 @@ def choose_random_lines_num(files_iter, num, unorder):
         unorder: if you want fixed order, specify False.
     Return: list of lines chosen random.
     """
- 
+
     lines = [line for line in files_iter]
     length = len(lines)
     num = length if num > length else num
@@ -145,21 +150,23 @@ def choose_random_lines_num(files_iter, num, unorder):
 # main
 #=======================================
 
+
 def main():
+    """main"""
     args = docopt(__doc__, version="{0} {1}".format(NAME, VERSION))
 
     try:
         args = validate_args(args)
-    except SchemaError as e:
-        print(e)
+    except SchemaError as error:
+        print(error)
         sys.exit(1)
 
-    it = iter_files(args["<files>"], args["--ignore-empty"])
+    files_iter = iter_files(args["<files>"], args["--ignore-empty"])
 
     if not args["-n"] is None:
-        lines = choose_random_lines_num(it, args["-n"], args["--unorder"])
+        lines = choose_random_lines_num(files_iter, args["-n"], args["--unorder"])
     else:
-        lines = choose_random_lines_probability(it, args["-p"], args["--unorder"])
+        lines = choose_random_lines_probability(files_iter, args["-p"], args["--unorder"])
 
     print("".join(lines), end="")
 
